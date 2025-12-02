@@ -1,16 +1,18 @@
-
-# TODO: ADD error handling, type hinting, decorators
+# TODO: ADD decorators
 
 class Ship:
     """ Impletes the ship class for the battleships game. """
-    def __init__(self, size):
+    def __init__(self, size: int):
+        if type(size) is not int:
+            raise Exception("ERROR: size must be an integer")
+
         self.__size = size
         self.__is_destroyed = False
 
-    def get_size(self):
+    def get_size(self) -> int:
         return self.__size
 
-    def is_destroyed(self):
+    def is_destroyed(self) -> bool:
         return self.__is_destroyed
 
     def hit(self):

@@ -1,9 +1,9 @@
 from domain.game import Game
+from domain.board import Board
 
 def main():
-    g = Game()
-    g.start_game_loop()
-    print(g)
+    game = Game()
+    game.start_game_loop()
 
 if __name__ == "__main__":
     main()
