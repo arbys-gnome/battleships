@@ -13,6 +13,35 @@ class Board:
         self.__empty_symbol = ' ' * self.__ship_symbol_w
         self.__ship_symbol = ship_symbol
         self.__board = [[self.__empty_symbol for _ in range(size)] for _ in range(size)]
+    
+    def __is_empty_square(self, x: int, y: int) -> bool:
+        """
+        __is_empty_square check if the square at position x and y is free.
+        
+        :param self: the Board
+        :param x: the row number
+        :type x: int
+        :param y: the column number
+        :type y: int
+        :return: True if the square is empty, False otherwise 
+        :rtype: bool
+        """
+        return self.__board[x][y] == self.__empty_symbol
+
+    def __is_valid_square(self, x: int, y: int) -> bool:
+        """
+        __is_valid_square check if the given coordinates point to a valid square.
+        
+        :param self: the Board
+        :param x: the row number
+        :type x: int
+        :param y: the column number
+        :type y: int
+        :return: True if the square is valid, False otherwise
+        :rtype: bool
+        """
+        return x >= 0 and x < len(self.__board) and \
+               y >= 0 and y < len(self.__board[x])
 
     def get_printable(self) -> str:
         return self.__str__()
@@ -30,27 +59,30 @@ class Board:
         """
 
         # check if the head can be placed
-        if x < 0 or x >= len(self.__board) or \
-           y < 0 or y >= len(self.__board[x]) or \
-           self.__board[x][y] != " ":
+        if not self.__is_valid_square(x, y) or \
+           not self.__is_empty_square(x, y):
             return False
         
         # check if the rest of the ship can be placed 
         if direction == "l":
             for i in range(1, ship_length):
-                if y - i < 0 or self.__board[x][y - i] != " ":
+                if not self.__is_valid_square(x, y - i) or \
+                   not self.__is_empty_square(x, y - i):
                     return False
         elif direction == "r":
             for i in range(1, ship_length):
-                if y + i >= len(self.__board[x]) or self.__board[x][y + i] != " ":
+                if not self.__is_valid_square(x, y + i) or \
+                   not self.__is_empty_square(x, y + i):
                     return False
         elif direction == "up":
             for i in range(1, ship_length):
-                if x - i < 0 or self.__board[x - i][y] != " ":
+                if not self.__is_valid_square(x - i, y) or \
+                   not self.__is_empty_square(x - i, y):
                     return False
         elif direction == "dn":
             for i in range(1, ship_length):
-                if y + i >= len(self.__board) or self.__board[x + i][y] != " ":
+                if not self.__is_valid_square(x + i, y) or \
+                   not self.__is_empty_square(x + i, y):
                     return False
         else:
             return False
@@ -72,15 +104,10 @@ class Board:
 
         return True # success
 
-    def __has_ship(self, x, y) -> bool:
-        return self.__board[x][y] != " "
-
     def try_hit(self, x, y) -> bool:
         # TODO: check if this was already hit
-        if self.__has_ship(x, y):
-            # TODO: mark the ship as hit
-            return True
-        return False
+        # TODO: mark the ship as hit
+        return True
 
     def __str__(self) -> str:
         fmt_board = ''
