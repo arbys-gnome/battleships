@@ -1,9 +1,18 @@
+import unicodedata
+
 class Board:
-    def __init__(self, size: int = 10):
+    def __init__(self, ship_symbol: str, size: int = 10):
         if type(size) is not int:
             raise Exception("ERROR: size must be an integer")
 
-        self.__board = [[" " for _ in range(size)] for _ in range(size)]
+        self.__ship_symbol_w = 0
+        for ch in ship_symbol:
+            ch_is_emoji: bool = unicodedata.east_asian_width(ch) == 'W'
+            self.__ship_symbol_w += 2 if ch_is_emoji else 1
+
+        self.__empty_symbol = ' ' * self.__ship_symbol_w
+        self.__ship_symbol = ship_symbol
+        self.__board = [[self.__empty_symbol for _ in range(size)] for _ in range(size)]
 
     def get_printable(self) -> str:
         return self.__str__()
@@ -47,19 +56,19 @@ class Board:
             return False
 
         # mark the place were the ship is placed
-        self.__board[x][y] = "🟦"
+        self.__board[x][y] = self.__ship_symbol
         if direction == "l":
             for i in range(1, ship_length):
-                self.__board[x][y - i] = "🟦"
+                self.__board[x][y - i] = self.__ship_symbol
         elif direction == "r":
             for i in range(1, ship_length):
-                self.__board[x][y + i] = "🟦"
+                self.__board[x][y + i] = self.__ship_symbol
         elif direction == "up":
             for i in range(1, ship_length):
-                self.__board[x - i][y] = "🟦"
+                self.__board[x - i][y] = self.__ship_symbol
         elif direction == "dn":
             for i in range(1, ship_length):
-                self.__board[x + i][y] = "🟦"
+                self.__board[x + i][y] = self.__ship_symbol
 
         return True # success
 
@@ -74,16 +83,11 @@ class Board:
         return False
 
     def __str__(self) -> str:
-        fmt_board = str(self.__board) \
-                    .replace("], ", "|\n") \
-                    .replace("[", "|") \
-                    .replace("]", "|") \
-                    .replace(", ", "|") \
-                    .replace("'", " ") \
-                    .replace("||", "|")
-        border = "-" * (len(self.__board[0]) * 4 + 1)
-        fmt_board_with_borders = border + "\n" + \
-                                 fmt_board.replace("\n", "\n" + border + "\n") + \
-                                 "\n" + border
-        return fmt_board_with_borders
+        fmt_board = ''
+        border = "-" * (len(self.__board[0]) * (3 + self.__ship_symbol_w) + 1)
+        for row in self.__board:
+            fmt_row = '|' + str(row)[1:-1].replace(', ', '|').replace("'", " ") + '|'
+            fmt_board += f'{border}\n{fmt_row}\n'
+        fmt_board += border + '\n'
+        return fmt_board
 

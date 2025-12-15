@@ -2,10 +2,10 @@ from .fleet import Fleet
 from .board import Board
 
 class Player:
-    def __init__(self, fleet: Fleet, board_size: int):
+    def __init__(self, fleet: Fleet, friedly_ship_symbol: str, enemy_ship_symbol: str, board_size: int):
         self.__fleet = fleet
-        self.__player_board = Board(board_size)
-        self.__opponent_board = Board(board_size)
+        self.__player_board = Board(friedly_ship_symbol, board_size)
+        self.__opponent_board = Board(enemy_ship_symbol, board_size)
 
     #TODO: change direction to an enum
     def __place_ship(self, x: int, y: int, direction: str, ship_size: int) -> bool:

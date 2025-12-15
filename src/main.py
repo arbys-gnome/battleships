@@ -1,8 +1,12 @@
 from domain.game import Game
-from domain.board import Board
+
+#TODO: make a settings class
 
 def main():
-    game = Game()
+    player1_color = '🟦'
+    player2_color = '🟥'
+    board_size = 10
+    game = Game(player1_color, player2_color, board_size)
     game.start_game_loop()
 
 if __name__ == "__main__":

@@ -4,25 +4,24 @@ from .player import Player
 from .fleet import Fleet 
 
 class Game:
-    def __init__(self):
+    def __init__(self, friendly_symbol: str, enemy_symbol: str, board_size: int = 10):
         self.__is_running = False
+        self.__setup(friendly_symbol, enemy_symbol, board_size)
     
-    def __setup(self):
-        BOARD_SIZE = 10
-        self.__player1 = Player(Fleet(), BOARD_SIZE)
-        self.__player2 = Player(Fleet(), BOARD_SIZE)
+    def __setup(self, friendly_symbol: str, enemy_symbol: str, board_size: int):
+        self.__player1 = Player(Fleet(), friendly_symbol, enemy_symbol, board_size)
+        self.__player2 = Player(Fleet(), friendly_symbol, enemy_symbol, board_size)
 
     def start_game_loop(self):
         if self.__is_running:
             return
-        self.__setup()
         self.__is_running = True
 
         # first phase (place ships)
         self.__player1.place_ships()
         self.__player2.place_ships()
 
-        return
+        return # early return for developing the first part of the game
 
         # second phase (fight)
         first_players_turn = True
