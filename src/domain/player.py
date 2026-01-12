@@ -10,6 +10,18 @@ class Player:
         # map coordinates (x,y) -> Ship (for hits)
         self.__ship_positions: dict[tuple[int,int], Ship] = {}
 
+        #  0 1
+        # -----
+        # |x|x| 0
+        # | | | 1 
+        # -----
+        # 
+        # ship_postions = {(0, 0) = ShipX}
+        # ship_postions = {(0, 1) = ShipX}
+        # ship_positons[(0, 1)] = ship_positions.get((0, 1)) = ShipX
+        #
+
+
     #TODO: change direction to an enum (in class)
     def __place_ship(self, x: int, y: int, direction: str, ship_size: int) -> bool:
         """
@@ -73,16 +85,16 @@ class Player:
     # Network / game integration helpers
     def receive_fire(self, x: int, y: int) -> str:
         """Process an incoming fire at (x,y) on this player's board and return
-        one of: 'miss', 'hit', 'sunk', 'win'"""
+        one of: 'miss', 'hit', 'sunk', 'win', 'already'"""
         result = self.__player_board.try_hit(x, y)
         if result == 'miss':
             return 'miss'
         if result == 'already':
-            return 'miss'
+            return 'already'
         if result == 'hit':
             # find ship object for this coordinate (if any)
-            ship = self.__ship_positions.get((x, y), None)
-            if ship is not None:
+            ship: Ship | None = self.__ship_positions.get((x, y), None)
+            if ship is not None: # TODO: convert to error
                 ship.hit()
                 if ship.is_destroyed():
                     if self.__fleet.destroyed():

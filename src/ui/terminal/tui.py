@@ -16,13 +16,13 @@ class TerminalUI:
         choice = input("Choose mode: ")
         if choice == '1':
             self.__game_loop()
-        elif choice == '2':
-            port = int(input("Port to listen on (e.g. 65432): "))
-            # NetworkSession.host(port, '🟦', '🟥')
-        elif choice == '3':
-            host = input("Host IP: ")
-            port = int(input("Port: "))
-            # NetworkSession.join(host, port, '🟦', '🟥')
+        # elif choice == '2':
+        #     port = int(input("Port to listen on (e.g. 65432): "))
+        #     NetworkSession.host(port, '🟦', '🟥')
+        # elif choice == '3':
+        #     host = input("Host IP: ")
+        #     port = int(input("Port: "))
+        #     NetworkSession.join(host, port, '🟦', '🟥')
         else:
             print("Unknown choice")
 
@@ -36,7 +36,7 @@ class TerminalUI:
         game_over = False
         while not game_over:
             raw = input("Give x and y (separated by space): ")
-            parts = raw.strip().split()
+            parts: list[str] = raw.strip().split()
             if len(parts) != 2:
                 print("Invalid input")
                 continue
@@ -57,7 +57,7 @@ class TerminalUI:
             print("--- Player 2 view of opponent ---")
             print(p2_opp)
 
-            game_over = self.game.game_over()
+            game_over: bool = self.game.game_over()
 
         self.__display_winner()
 

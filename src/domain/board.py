@@ -132,6 +132,7 @@ class Board:
         Raises IndexError for invalid coordinates and returns 'already' if the
         square was already targeted.
         """
+        # TODO: throw errors
         if not self.__is_valid_square(x, y):
             raise IndexError("Invalid board coordinates")
 

@@ -22,7 +22,7 @@ class Game:
             self.__player1.mark_opponent_board(x, y, result)
             self.__first_player_turn = False
             return result
-        else:
+        else: # player2's turn
             result = self.__player1.receive_fire(x, y)
             self.__player2.mark_opponent_board(x, y, result)
             self.__first_player_turn = True

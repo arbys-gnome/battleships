@@ -17,7 +17,7 @@ class Ship:
 
     def hit(self):
         if self.__size == 0:
-            return
+            return # TODO: convert to error
 
         self.__size -= 1
 
