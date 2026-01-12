@@ -108,10 +108,50 @@ class Board:
         return True # success
 
     # TODO: (in holiday) implement try_hit (follow the exemples we wrote)
-    def try_hit(self, x, y) -> bool:
-        # TODO: check if this was already hit
-        # TODO: mark the ship as hit
-        return True
+    def _pad_symbol(self, ch: str) -> str:
+        """Return a symbol padded to the ship symbol width."""
+        base = ch
+        # pad with spaces to match ship symbol width
+        if len(base) < self.__ship_symbol_w:
+            base = base + ' ' * (self.__ship_symbol_w - len(base))
+        return base
+
+    def get_symbol(self, x: int, y: int) -> str:
+        if not self.__is_valid_square(x, y):
+            raise IndexError("Invalid board coordinates")
+        return self.__board[x][y]
+
+    def set_symbol(self, x: int, y: int, symbol: str):
+        if not self.__is_valid_square(x, y):
+            raise IndexError("Invalid board coordinates")
+        self.__board[x][y] = self._pad_symbol(symbol)
+
+    def try_hit(self, x, y) -> str:
+        """Apply a hit on the board and return the result: 'miss' or 'hit'.
+
+        Raises IndexError for invalid coordinates and returns 'already' if the
+        square was already targeted.
+        """
+        if not self.__is_valid_square(x, y):
+            raise IndexError("Invalid board coordinates")
+
+        current = self.__board[x][y]
+        # Already targeted markers: an 'X' for hit or '.' for miss (padded)
+        if current.strip() in ['X', '.']:
+            return 'already'
+
+        if current == self.__empty_symbol:
+            # miss
+            self.__board[x][y] = self._pad_symbol('.')
+            return 'miss'
+        elif current == self.__ship_symbol:
+            # hit
+            self.__board[x][y] = self._pad_symbol('X')
+            return 'hit'
+        else:
+            # Shouldn't happen but treat as miss
+            self.__board[x][y] = self._pad_symbol('.')
+            return 'miss'
 
     def __str__(self) -> str:
         fmt_board = ''

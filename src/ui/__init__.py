@@ -1,1 +1,1 @@
-from terminal.tui import TerminalUI
+from .terminal.tui import TerminalUI
