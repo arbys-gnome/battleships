@@ -1,7 +1,7 @@
-# TODO: ADD decorators
+# TODO: ADD decorators (later on)
 
 class Ship:
-    """ Impletes the ship class for the battleships game. """
+    """Impletes the ship class for the battleships game. """
     def __init__(self, size: int):
         if type(size) is not int:
             raise Exception("ERROR: size must be an integer")

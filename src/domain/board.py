@@ -46,10 +46,7 @@ class Board:
     def get_printable(self) -> str:
         return self.__str__()
 
-    # TODO: (in holiday) replace the return type of this function to None (return nothing):
-    # and handle the case in which you don't have valid input (the ones in which you return False)
-    # with exceptions and try...except
-    def place_ship(self, x: int, y: int, direction: str, ship_length: int) -> bool:
+    def place_ship(self, x: int, y: int, direction: str, ship_length: int):
         """
         Places the ship in the board.
         
@@ -57,38 +54,37 @@ class Board:
         :param x: the x coordinate of the ship's head
         :param y: the y coordinate of the ship's head
         :param direction: direction of the ship's tail
-        :return: True if the placement was successfull, False otherwise
-        :rtype: bool
+        :raises Exception: if the ship can't be placed on the given position
         """
 
         # check if the head can be placed
         if not self.__is_valid_square(x, y) or \
            not self.__is_empty_square(x, y):
-            return False
+            raise Exception("Can't place ship on given postion")
         
         # check if the rest of the ship can be placed 
         if direction == "l":
             for i in range(1, ship_length):
                 if not self.__is_valid_square(x, y - i) or \
                    not self.__is_empty_square(x, y - i):
-                    return False
+                    raise Exception("Can't place ship in the given direction")
         elif direction == "r":
             for i in range(1, ship_length):
                 if not self.__is_valid_square(x, y + i) or \
                    not self.__is_empty_square(x, y + i):
-                    return False
+                    raise Exception("Can't place ship in the given direction")
         elif direction == "up":
             for i in range(1, ship_length):
                 if not self.__is_valid_square(x - i, y) or \
                    not self.__is_empty_square(x - i, y):
-                    return False
+                    raise Exception("Can't place ship in the given direction")
         elif direction == "dn":
             for i in range(1, ship_length):
                 if not self.__is_valid_square(x + i, y) or \
                    not self.__is_empty_square(x + i, y):
-                    return False
+                    raise Exception("Can't place ship in the given direction")
         else:
-            return False
+            raise Exception("Invalid Direction")
 
         # mark the place were the ship is placed
         self.__board[x][y] = self.__ship_symbol
@@ -105,9 +101,6 @@ class Board:
             for i in range(1, ship_length):
                 self.__board[x + i][y] = self.__ship_symbol
 
-        return True # success
-
-    # TODO: (in holiday) implement try_hit (follow the exemples we wrote)
     def _pad_symbol(self, ch: str) -> str:
         """Return a symbol padded to the ship symbol width."""
         base = ch
@@ -132,6 +125,7 @@ class Board:
         Raises IndexError for invalid coordinates and returns 'already' if the
         square was already targeted.
         """
+        # TODO: use an enum
         # TODO: throw errors
         if not self.__is_valid_square(x, y):
             raise IndexError("Invalid board coordinates")

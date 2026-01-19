@@ -10,9 +10,22 @@ class Game:
         self.__player1 = Player(Fleet(), friendly_symbol, enemy_symbol, board_size)
         self.__player2 = Player(Fleet(), friendly_symbol, enemy_symbol, board_size)
 
-    def place_ships(self):
-        self.__player1.place_ships()
-        self.__player2.place_ships()
+    def place_ship(self, ship_position: tuple[int, int], ship_direction: str) -> bool:
+        """
+        Orchestrates the placemnt of the ships
+
+        :returns True if there are more ships to be placed
+                 False if there are no more ships to be placed 
+        """
+        if self.__first_player_turn:
+            self.__player1.place_ship(ship_position, ship_direction)
+            self.__first_player_turn = False
+        else:
+            self.__player2.place_ship(ship_position, ship_direction)
+            self.__first_player_turn = True
+        return False \
+            if self.__player1.all_ships_placed() or self.__player2.all_ships_placed() \
+            else True
 
     def try_hit(self, x: int, y: int) -> str:
         """Apply a hit from the current player to the opponent and return
@@ -29,13 +42,14 @@ class Game:
             return result
 
     def game_over(self):
-        if not self.__player1.has_remaining_ships() or not self.__player2.has_remaining_ships():
+        if not self.__player1.has_undestroyed_ships() or not self.__player2.has_undestroyed_ships():
             return True
         return False
 
     def get_player1_boards(self) -> tuple[str,str]:
         """Return (player_board_printable, opponent_board_printable) for player1."""
-        return (self.__player1.get_player_board_printable(), self.__player1.get_opponent_board_printable())
+        return (self.__player1.get_player_board_printable(), 
+                self.__player1.get_opponent_board_printable())
 
     def get_player2_boards(self) -> tuple[str,str]:
         """Return (player_board_printable, opponent_board_printable) for player2."""
@@ -43,9 +57,9 @@ class Game:
 
     def get_winner(self) -> int | None:
         """Return 1 if player1 won, 2 if player2 won, or None if no winner yet."""
-        if not self.__player2.has_remaining_ships():
+        if not self.__player2.has_undestroyed_ships():
             return 1
-        if not self.__player1.has_remaining_ships():
+        if not self.__player1.has_undestroyed_ships():
             return 2
         return None
 

@@ -16,6 +16,7 @@ class TerminalUI:
         choice = input("Choose mode: ")
         if choice == '1':
             self.__game_loop()
+        # ignore for now
         # elif choice == '2':
         #     port = int(input("Port to listen on (e.g. 65432): "))
         #     NetworkSession.host(port, '🟦', '🟥')
@@ -26,22 +27,77 @@ class TerminalUI:
         else:
             print("Unknown choice")
 
+    def print_error(self):
+        pass
+
     def __game_loop(self):
         # first phase (place ships)
-        print("Player 1, place your ships")
         # for local mode we place ships for both players
-        self.game.place_ships()
+        
+        print("Players! Place your ships")
+        more_ships_to_place = True
+        error_msg: str = ""
+        while more_ships_to_place:
+            print(self.game.get_player1_boards()[0])
+            print(self.game.get_player2_boards()[0])
+            if error_msg != "":
+                # implement a helper funciton to print error messages
+                print(f"Error: {error_msg}")
+                error_msg = ""
+
+            raw = input("Give the coordinates for the ship: ").strip()
+            parts = raw.split()
+            if (len(parts) < 2):
+                error_msg = "Two coordinates must be provided"
+                continue
+
+            try:
+                x = int(parts[0])
+                y = int(parts[1])
+                ship_location = (x, y)
+            except ValueError:
+                error_msg = "Invalid coordinates"
+                continue
+            ship_direction = input("Give the direction of the ship(up, dn, l, r): ").strip()
+            if ship_direction not in ['up', 'dn', 'l', 'r']:
+                error_msg = "Invalid direction"
+                continue;
+
+            try: 
+                more_ships_to_place = self.game.place_ship(ship_location, ship_direction)
+            except Exception as e:
+                more_ships_to_place = True
+                error_msg = str(e)
 
         # second phase (fight)
         game_over = False
         while not game_over:
+            # TODO: implement error handleing for the game part (next time)
+            print("Player 1 board:")
+            print(self.game.get_player1_boards()[0])
+            print("Player 1 opponent's board:")
+            print(self.game.get_player1_boards()[1])
+            print("Player 2 board:")
+            print(self.game.get_player2_boards()[0])
+            print("Player 2 opponent's board:")
+            print(self.game.get_player2_boards()[1])
+            if error_msg != "":
+                print(f"Error: {error_msg}")
+                error_msg = ""
+
             raw = input("Give x and y (separated by space): ")
             parts: list[str] = raw.strip().split()
             if len(parts) != 2:
-                print("Invalid input")
+                error_msg = "Invalid input"
                 continue
-            x = int(parts[0])
-            y = int(parts[1])
+            
+            try:
+                x = int(parts[0])
+                y = int(parts[1])
+            except ValueError:
+                error_msg = "Invalid value for coordinates"
+                continue
+
             result = self.game.try_hit(x, y)
             print("Result:", result)
 
